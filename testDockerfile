@@ -1,0 +1,61 @@
+# Use jlesage/makemkv as the base image
+FROM jlesage/makemkv:latest
+
+# Set public environment variables.
+ENV \
+    # AMTREN_DEVICE_PATH=/dev/ttyUSB0 \
+    MAKEMKV_KEY=M-rX19qpIgKGlIWfRy8XQJmpI84IMvWklWyxkXGwHTAOAYFu_YtZGAj7SSdjXoGHka2R
+    # MAKEMKV_GUI=0 \
+    # AUTO_DISC_RIPPER=0 \
+    # AUTO_DISC_RIPPER_MAKEMKV_PROFILE= \
+    # AUTO_DISC_RIPPER_EJECT=0 \
+    # AUTO_DISC_RIPPER_PARALLEL_RIP=0 \
+    # AUTO_DISC_RIPPER_INTERVAL=5 \
+    # AUTO_DISC_RIPPER_MIN_TITLE_LENGTH= \
+    # AUTO_DISC_RIPPER_BD_MODE=mkv \
+    # AUTO_DISC_RIPPER_FORCE_UNIQUE_OUTPUT_DIR=0 \
+    # AUTO_DISC_RIPPER_NO_GUI_PROGRESS=1
+RUN apk add bash
+
+# Install Python3 and required Python packages
+RUN apk update && apk add --update --no-cache python3 py3-pip && \
+	ln -sf python3 /usr/bin/python
+
+# Install gcc and necessary build tools
+RUN apk add gcc musl-dev lsblk
+
+# udevadm info --query=property --name
+
+COPY requirements.txt /tmp
+RUN pip install -r /tmp/requirements.txt
+
+# Compile the C source file into an executable
+WORKDIR /amtren/src
+
+# Copy the current directory contents into the container at /amtren/r2disc2-master/src
+COPY /src/serial_drive.c .
+
+RUN gcc -o serial_drive serial_drive.c
+
+RUN mkdir -p /media/removable_disk
+# Set the working directory
+WORKDIR /amtren
+
+# Copy configuration and source files into the container
+# COPY config /amtren/config/
+# COPY r2disc2-master/src/serial_drive r2disc2-master/src/serial_drive
+# COPY auto_rip.py /amtren/
+# COPY Drive.py /amtreen/
+# COPY main.py /amtren/
+COPY . . 
+
+
+# EXPOSE 8080
+
+# Entry point for the container
+
+# Command to run when the container starts
+# CMD ["/usr/bin/python3", "main.py"]
+
+# Set the entry point to a shell for interactive use
+ENTRYPOINT ["sh"]
