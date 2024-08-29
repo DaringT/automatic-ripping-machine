@@ -4,7 +4,13 @@ import os
 import pyudev
 
 from arm.ui import db
+import amtrem
 
+import arm.config.config as cfg
+
+if cfg.arm_config['AMTREM_DISCLOADER'] == True:                        
+    logging.info("Calibrating Amtren")
+    #! amtrem.DiscLoader.calibrate_unit()
 
 class SystemDrives(db.Model):
     """
@@ -78,6 +84,12 @@ class SystemDrives(db.Model):
                     # eject returns 0 for successful, 1 for failure
                     if not bool(os.system("eject -v " + self.mount)):
                         logging.debug(f"Ejected disc {self.mount}")
+                        
+                        if cfg.arm_config['AMTREM_DISCLOADER'] == True:                        
+                            #! logging.debug("Amtrem: Send_disc_from_drive_to_output_bin", amtrem.DiscLoader.send_disc_from_drive_to_output_bin())
+                            logging.debug("Amtrem: Send_disc_from_drive_to_output_bin")
+                            #! logging.debug("Amtrem: Insert_disc_to_from_bin", amtrem.DiscLoader.insert_disc_to_from_bin())
+                            logging.debug("Amtrem: Insert_disc_to_from_bin")
                     else:
                         logging.debug(f"Failed to eject {self.mount}")
                     self.open = True

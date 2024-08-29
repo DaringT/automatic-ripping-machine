@@ -6,3 +6,6 @@ colorama==0.4.4
 #requirements added for PR#650
 flake8==6.0.0
 waitress==2.1.2
+
+# For Amtrem Discloader
+# pyserial==3.5

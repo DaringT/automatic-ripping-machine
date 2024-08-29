@@ -354,3 +354,12 @@ JSON_URL: ""
 # File location of your apprise.yaml file
 # Leave blank to disable
 APPRISE: ""
+
+
+#################################################
+##            AMTREM DISCLOADER                ##
+#################################################
+
+# File location of your apprise.yaml file
+# Leave blank to disable
+AMTREM_DISCLOADER: ""
